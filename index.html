@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[vrsn] Funnel Intelligence + LP Build Plan — Skyvane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0d0f13;
+  --bg2:     #141720;
+  --bg3:     #1a1e28;
+  --bg4:     #1f2330;
+  --border:  rgba(255,255,255,.07);
+  --border2: rgba(255,255,255,.13);
+  --text:    #f0ede6;
+  --muted:   #8a8d99;
+  --dim:     #555870;
+  --amber:   #f5c842;
+  --amber-d: rgba(245,200,66,.1);
+  --amber-b: rgba(245,200,66,.25);
+  --teal:    #3dd9c4;
+  --teal-d:  rgba(61,217,196,.1);
+  --coral:   #ff6b4a;
+  --coral-d: rgba(255,107,74,.1);
+  --violet:  #a78bfa;
+  --violet-d:rgba(167,139,250,.1);
+  --green:   #5ee07a;
+  --green-d: rgba(94,224,122,.1);
+  --red:     #ff5a5a;
+  --red-d:   rgba(255,90,90,.1);
+  --blue:    #4a9eff;
+  --blue-d:  rgba(74,158,255,.1);
+  --r:       10px;
+  --rsm:     6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NOISE */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 28px 0;
+  position: sticky; top: 0;
+  height: 100vh; overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+
+.s-logo {
+  padding: 0 22px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.s-brand {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px; font-weight: 800;
+  letter-spacing: -0.02em; color: var(--text);
+}
+.s-brand span { color: var(--amber); }
+
+.s-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+  margin-top: 4px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+nav { padding: 16px 0; flex: 1; }
+
+.nav-group {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--dim);
+  padding: 16px 22px 6px;
+}
+
+.nav-group:first-child { padding-top: 8px; }
+
+.nav-a {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 22px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all .15s;
+}
+
+.nav-a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+
+.nav-a.act {
+  color: var(--amber);
+  border-left-color: var(--amber);
+  background: var(--amber-d);
+}
+
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; opacity: .5; flex-shrink: 0;
+}
+.nav-a.act .nav-dot { opacity: 1; }
+
+.s-footer {
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+  line-height: 1.6;
+}
+
+/* ── MAIN ── */
+.main { padding: 0 52px 80px; }
+
+/* ── HERO ── */
+.hero {
+  padding: 64px 0 52px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+
+.hero-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--amber);
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 800; line-height: 1.1;
+  letter-spacing: -0.03em; margin-bottom: 18px;
+}
+.hero h1 em { color: var(--amber); font-style: normal; }
+
+.hero-sub {
+  font-size: 16px; color: var(--muted);
+  line-height: 1.65; max-width: 620px;
+  margin-bottom: 28px;
+}
+
+.hero-stats {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+
+.hs {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--dim);
+  padding: 6px 14px;
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  background: var(--bg3);
+}
+.hs span { color: var(--amber); }
+
+/* ── SECTION ── */
+.section { margin-bottom: 64px; }
+
+.sec-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--amber);
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.section h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(20px, 2.5vw, 26px);
+  font-weight: 700; letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+
+.section .sub {
+  font-size: 14px; color: var(--muted);
+  max-width: 640px; margin-bottom: 28px;
+}
+
+.divider {
+  border: none; border-top: 1px solid var(--border);
+  margin-bottom: 56px;
+}
+
+/* ── STAT STRIP ── */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 40px;
+}
+
+.stat-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+}
+
+.stat-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+  letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.stat-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 30px; font-weight: 800;
+  letter-spacing: -0.03em; line-height: 1;
+  color: var(--text);
+}
+.stat-val.red { color: var(--red); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.green { color: var(--green); }
+
+.stat-note { font-size: 11px; color: var(--dim); margin-top: 5px; font-family: 'DM Mono', monospace; }
+
+/* ── COMPETITOR CARDS ── */
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+.comp-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  transition: border-color .2s;
+}
+.comp-card:hover { border-color: var(--border2); }
+.comp-card.hi { border-color: rgba(245,200,66,.3); }
+.comp-card.hi-b { border-color: rgba(74,158,255,.28); }
+
+.c-badge {
+  display: inline-flex; align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px;
+  margin-bottom: 12px;
+}
+.cb-vrsn { background: var(--amber-d); color: var(--amber); border: 1px solid var(--amber-b); }
+.cb-kuru { background: var(--teal-d); color: var(--teal); border: 1px solid rgba(61,217,196,.25); }
+.cb-ortho { background: var(--green-d); color: var(--green); border: 1px solid rgba(94,224,122,.2); }
+
+.comp-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 8px;
+}
+
+.comp-body { font-size: 13px; color: var(--muted); line-height: 1.65; font-family: 'DM Mono', monospace; }
+
+.scores { margin-top: 16px; display: flex; flex-direction: column; gap: 9px; }
+
+.sc-row { display: grid; grid-template-columns: 110px 1fr 36px; align-items: center; gap: 10px; }
+
+.sc-lbl { font-size: 10px; color: var(--dim); font-family: 'DM Mono', monospace; }
+
+.sc-track {
+  height: 3px; background: var(--bg3); border-radius: 2px; overflow: hidden;
+}
+.sc-fill { height: 100%; border-radius: 2px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.sf-strong { background: var(--green); }
+.sf-med    { background: var(--amber); }
+.sf-weak   { background: var(--red); }
+
+.sc-val { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--dim); text-align: right; }
+
+.verdict {
+  margin-top: 14px; padding: 9px 12px;
+  border-radius: var(--rsm);
+  font-size: 12px; line-height: 1.55;
+  font-family: 'DM Mono', monospace;
+}
+.v-win  { background: var(--green-d); color: var(--green); border-left: 2px solid var(--green); }
+.v-loss { background: var(--red-d); color: #ff9090; border-left: 2px solid var(--red); }
+.v-med  { background: var(--amber-d); color: var(--amber); border-left: 2px solid var(--amber); }
+
+/* ── URL AUDIT TABLE ── */
+.audit-table { width: 100%; border-collapse: collapse; }
+
+.audit-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--dim);
+  padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.audit-table td {
+  padding: 12px 14px;
+  font-size: 12px; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  font-family: 'DM Mono', monospace;
+}
+.audit-table tr:last-child td { border-bottom: none; }
+.audit-table tr:hover td { background: rgba(255,255,255,.015); }
+.audit-table td:first-child { color: var(--text); font-size: 13px; }
+
+.fmt {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+}
+.fmt-adv     { background: var(--coral-d); color: var(--coral); border: 1px solid rgba(255,107,74,.2); }
+.fmt-listicle{ background: var(--green-d);  color: var(--green); border: 1px solid rgba(94,224,122,.2); }
+.fmt-pdp     { background: var(--blue-d);   color: var(--blue);  border: 1px solid rgba(74,158,255,.2); }
+.fmt-quiz    { background: var(--violet-d); color: var(--violet);border: 1px solid rgba(167,139,250,.2); }
+.fmt-hybrid  { background: var(--teal-d);   color: var(--teal);  border: 1px solid rgba(61,217,196,.2); }
+.fmt-bundle  { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
+.fmt-seo     { background: var(--bg3); color: var(--dim); border: 1px solid var(--border); }
+
+.vd { font-size: 10px; font-family: 'DM Mono', monospace; font-weight: 500; }
+.vd-win  { color: var(--green); }
+.vd-gap  { color: var(--amber); }
+.vd-miss { color: var(--red); }
+.vd-ab   { color: var(--teal); }
+
+.url-tag { font-size: 10px; color: var(--dim); display: block; margin-top: 3px; }
+
+/* ── FORMAT MATRIX ── */
+.matrix {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.mx-hdr {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--dim);
+  padding: 12px 16px;
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border2);
+  border-right: 1px solid var(--border);
+}
+.mx-hdr:last-child { border-right: none; }
+.mx-hdr.hl { color: var(--amber); background: var(--amber-d); }
+
+.mx-cell {
+  padding: 12px 16px;
+  font-size: 12px; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  vertical-align: middle;
+}
+.mx-cell:last-child { border-right: none; }
+.mx-cell.label { color: var(--text); font-size: 12px; font-weight: 500; }
+.mx-cell.hl { background: rgba(245,200,66,.04); }
+
+.mx-row:last-child .mx-cell { border-bottom: none; }
+
+.chk { color: var(--green); }
+.prt { color: var(--amber); }
+.crs { color: var(--red); }
+.star{ color: var(--amber); font-size: 13px; }
+
+/* ── ANALYSIS CARDS ── */
+.analysis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.analysis-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 24px;
+}
+
+.analysis-card.full { grid-column: 1/-1; }
+
+.ac-brand {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--dim);
+  letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.strength-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: .06em;
+  padding: 2px 9px; border-radius: 20px;
+  margin-bottom: 12px; display: inline-block;
+}
+.st-kuru  { background: var(--teal-d); color: var(--teal); border: 1px solid rgba(61,217,196,.2); }
+.st-ortho { background: var(--green-d); color: var(--green); border: 1px solid rgba(94,224,122,.2); }
+.st-vrsn  { background: var(--amber-d); color: var(--amber); border: 1px solid var(--amber-b); }
+
+.analysis-card h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: -0.01em; margin-bottom: 12px;
+}
+
+.analysis-card ul { padding-left: 16px; }
+.analysis-card li { font-size: 13px; color: var(--muted); margin-bottom: 9px; line-height: 1.6; }
+.analysis-card li strong { color: var(--text); font-weight: 500; }
+
+.key-finding {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: var(--r); padding: 20px 24px;
+  margin-top: 0;
+}
+.kf-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--amber);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* ── INSIGHT / WHITESPACE BOXES ── */
+.insight {
+  background: var(--amber-d);
+  border: 1px solid var(--amber-b);
+  border-radius: var(--r);
+  padding: 18px 22px; margin-bottom: 14px;
+}
+.insight-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--amber);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.insight-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--amber); margin-bottom: 6px;
+}
+.insight-body { font-size: 13px; color: var(--muted); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+.ws-box {
+  background: var(--bg3);
+  border: 1px dashed var(--border2);
+  border-radius: var(--r);
+  padding: 18px 22px; margin-bottom: 12px;
+}
+.ws-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ws-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 600;
+  margin-bottom: 5px;
+}
+.ws-body { font-size: 13px; color: var(--muted); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+/* ── LP PLAN SECTIONS ── */
+.plan-type {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+
+.plan-type-hdr {
+  display: grid; grid-template-columns: 52px 1fr auto;
+  gap: 16px; align-items: start;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+
+.plan-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px; font-weight: 800;
+  color: var(--dim); line-height: 1; padding-top: 2px;
+}
+
+.plan-type-hdr h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -0.01em; margin-bottom: 6px;
+}
+
+.plan-type-hdr p { font-size: 12px; color: var(--muted); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+.plan-meta { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+
+.plan-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--muted);
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(245,200,66,.04);
+  border-left: 2px solid var(--amber);
+  line-height: 1.6;
+}
+.plan-note strong { color: var(--text); font-weight: 500; }
+
+.angle-card {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--border);
+}
+.angle-card:last-child { border-bottom: none; }
+
+.angle-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.angle-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -0.01em; margin-bottom: 10px;
+}
+
+.hook-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.hook {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-size: 15px; color: var(--amber);
+  line-height: 1.55; padding: 10px 14px;
+  border-left: 2px solid var(--amber-b);
+  margin-bottom: 16px;
+  background: var(--amber-d);
+  border-radius: 0 var(--rsm) var(--rsm) 0;
+}
+
+.angle-card ul { padding-left: 16px; }
+.angle-card li { font-size: 12px; color: var(--muted); margin-bottom: 7px; line-height: 1.6; font-family: 'DM Mono', monospace; }
+.angle-card li strong { color: var(--text); font-weight: 500; }
+
+.audience-tag {
+  display: inline-block; margin-top: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--teal);
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--teal-d);
+  border: 1px solid rgba(61,217,196,.2);
+  letter-spacing: .03em;
+}
+
+/* ── QUIZ SECTION ── */
+.quiz-block {
+  background: var(--bg2);
+  border: 1px solid rgba(167,139,250,.3);
+  border-radius: var(--r); overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.quiz-hdr {
+  background: var(--violet-d);
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(167,139,250,.2);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--violet);
+}
+
+.quiz-questions { padding: 20px 22px; }
+
+.quiz-q {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; color: var(--muted);
+  padding: 10px 14px;
+  border-left: 2px solid rgba(167,139,250,.3);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.quiz-q:last-child { margin-bottom: 0; }
+.quiz-q strong { color: var(--text); font-weight: 500; }
+
+.quiz-flow {
+  display: flex; align-items: center;
+  gap: 0; padding: 20px 22px;
+  border-top: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.qf-step {
+  background: var(--bg3);
+  border: 1px solid rgba(167,139,250,.25);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  min-width: 120px; flex-shrink: 0;
+  text-align: center;
+}
+
+.qf-step-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--violet);
+  letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.qf-step-t {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--text);
+  line-height: 1.4;
+}
+
+.qf-arrow { padding: 0 8px; color: var(--dim); flex-shrink: 0; font-size: 12px; }
+
+/* ── PRIORITY GRID ── */
+.priority-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pc {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+  transition: border-color .2s;
+}
+.pc:hover { border-color: var(--border2); }
+.pc.urgent { border-color: rgba(245,200,66,.3); background: var(--amber-d); }
+
+.pc-order {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.pc.urgent .pc-order { color: var(--amber); }
+
+.pc-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -0.01em; margin-bottom: 8px;
+}
+
+.pc-why { font-size: 12px; color: var(--muted); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+/* ── FORMATS VERDICT ── */
+.fmt-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+.fmt-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+}
+.fmt-card.hi { border-color: rgba(245,200,66,.3); }
+.fmt-card.hi-b { border-color: rgba(74,158,255,.3); }
+
+.fmt-card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 6px;
+}
+.fmt-card-body { font-size: 12px; color: var(--muted); line-height: 1.6; font-family: 'DM Mono', monospace; }
+
+/* ── CROWDED ANGLES ── */
+.crowded-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 22px; margin-top: 14px;
+}
+.crowded-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; color: var(--dim);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.crowded-item {
+  display: flex; align-items: flex-start;
+  gap: 10px; font-size: 12px; color: var(--muted);
+  margin-bottom: 9px; font-family: 'DM Mono', monospace;
+  line-height: 1.55;
+}
+.crowded-item:last-child { margin-bottom: 0; }
+.ca { color: var(--red); flex-shrink: 0; }
+.crowded-item strong { color: var(--text); font-weight: 500; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+/* FADE-IN */
+.fi { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+.fi.vis { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .main { padding: 0 24px 60px; }
+  .stat-strip, .comp-grid, .fmt-grid, .priority-grid, .analysis-grid { grid-template-columns: 1fr; }
+  .matrix { grid-template-columns: 1fr 1fr; }
+  .plan-type-hdr { grid-template-columns: 40px 1fr; }
+  .plan-meta { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar">
+  <div class="s-logo">
+    <div class="s-brand">[vrsn] <span>intel</span></div>
+    <div class="s-sub">Funnel Intelligence + LP Plan</div>
+  </div>
+  <nav>
+    <div class="nav-group">Intelligence</div>
+    <a href="#overview" class="nav-a act"><span class="nav-dot"></span>Overview</a>
+    <a href="#audit" class="nav-a"><span class="nav-dot"></span>URL Audit (9 pages)</a>
+    <a href="#competitors" class="nav-a"><span class="nav-dot"></span>Competitor Scores</a>
+    <a href="#breakdown" class="nav-a"><span class="nav-dot"></span>Brand Breakdown</a>
+    <a href="#matrix" class="nav-a"><span class="nav-dot"></span>Format Matrix</a>
+    <a href="#formats" class="nav-a"><span class="nav-dot"></span>Format Verdict</a>
+    <a href="#whitespace" class="nav-a"><span class="nav-dot"></span>White Space Map</a>
+    <div class="nav-group">Build Plan</div>
+    <a href="#pdp" class="nav-a"><span class="nav-dot"></span>PDP-Style (3 angles)</a>
+    <a href="#advertorials" class="nav-a"><span class="nav-dot"></span>Advertorials (3 angles)</a>
+    <a href="#listicles" class="nav-a"><span class="nav-dot"></span>Listicles (3 angles)</a>
+    <a href="#quiz" class="nav-a"><span class="nav-dot"></span>Quiz Funnel</a>
+    <a href="#priority" class="nav-a"><span class="nav-dot"></span>Build Order</a>
+  </nav>
+  <div class="s-footer">
+    Generated: Mar 30, 2026<br>
+    Skyvane × wear.vrsn<br>
+    Confidential
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero fi" id="overview">
+  <div class="hero-tag">Competitive Intelligence · LP Strategy Brief · Skyvane × [vrsn]</div>
+  <h1>Competitor Funnel Analysis<br>& <em>[vrsn] LP Build Plan</em></h1>
+  <p class="hero-sub">A deep audit of Kuru and Orthofeet's full funnel library vs [vrsn]'s current pages — mapped directly to the 10-LP ecosystem sold to Justin. Includes format verdict, angles with hooks, and build sequence.</p>
+  <div class="hero-stats">
+    <div class="hs"><span>9</span> URLs audited</div>
+    <div class="hs"><span>2</span> competitors mapped</div>
+    <div class="hs"><span>10</span> LPs to build</div>
+    <div class="hs"><span>4</span> formats · 9+ angles</div>
+    <div class="hs"><span>3</span> white space angles</div>
+  </div>
+</div>
+
+<!-- STAT STRIP -->
+<div class="stat-strip fi">
+  <div class="stat-box">
+    <div class="stat-lbl">Pages analyzed</div>
+    <div class="stat-val">11</div>
+    <div class="stat-note">3 brands, 11 live LPs</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-lbl">VRSN current LPs</div>
+    <div class="stat-val red">2</div>
+    <div class="stat-note">Goldilocks + Women's PDP</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-lbl">Target LP count</div>
+    <div class="stat-val amber">10</div>
+    <div class="stat-note">Across 4 formats</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-lbl">White space angles</div>
+    <div class="stat-val green">3</div>
+    <div class="stat-note">Uncontested by competitors</div>
+  </div>
+</div>
+
+<!-- ═══ SECTION 1: URL AUDIT ═══ -->
+<section class="section fi" id="audit">
+  <div class="sec-label">Section 01 · URL Audit</div>
+  <h2>What Kuru & Orthofeet Are Actually Running</h2>
+  <p class="sub">Each URL classified by format, structural logic, primary angle, and what makes it work or fail. The competitive benchmark we're building against.</p>
+
+  <div style="border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th>Brand · Page</th>
+        <th>Format</th>
+        <th>Primary angle</th>
+        <th>Structure</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Kuru · p-m-kuru <span class="url-tag">kurufootwear.com/pages/p-m-kuru</span></td>
+        <td><span class="fmt fmt-hybrid">Hybrid Advertorial</span></td>
+        <td>Tech credibility → pain narrative. "It's not you, it's your shoes." X-ray heel damage visual. Comparison table vs generic shoes.</td>
+        <td>Hero stat (81% Americans) → press logos → UGC carousel → KURUSOLE tech explainer → vs. table → quiz CTA → product grid.</td>
+        <td><span class="vd vd-win">Strong</span></td>
+      </tr>
+      <tr>
+        <td>Kuru · p-m-kuru-v2 <span class="url-tag">kurufootwear.com/pages/p-m-kuru-v2</span></td>
+        <td><span class="fmt fmt-hybrid">Hybrid + VSL Shell</span></td>
+        <td>Same as v1 but opens "Real Talk — What even IS a Kuru?" More conversational, lower authority, higher relatability. HSA/FSA badge prominent.</td>
+        <td>Video hero → Real Talk copy → 4 reasons → testimonial carousel → 72%/97% stats → quiz → product grid.</td>
+        <td><span class="vd vd-ab">A/B of v1</span></td>
+      </tr>
+      <tr>
+        <td>Kuru · p-m-5reasonswhy <span class="url-tag">kurufootwear.com/pages/p-m-5reasonswhy</span></td>
+        <td><span class="fmt fmt-listicle">Listicle</span></td>
+        <td>"5 Reasons People Are Leaving Their Old Shoes for KURU." Pure numbered listicle, video per reason. Skims-style scrolling.</td>
+        <td>Headline → 5-item list preview → video + copy per reason → testimonial grid → product grid.</td>
+        <td><span class="vd vd-win">Strong format</span></td>
+      </tr>
+      <tr>
+        <td>Kuru · p-tech-concept <span class="url-tag">kurufootwear.com/pages/p-tech-concept</span></td>
+        <td><span class="fmt fmt-adv">Advertorial / Tech</span></td>
+        <td>"Patented Tech, Proven Pain Relief." Pure tech explainer — KURUSOLE diagram, Our vs. Theirs table, 72%/97% stats, shoe finder.</td>
+        <td>Hero → press logos → tech copy → comparison table → stat proof → shoe finder CTA → product grid.</td>
+        <td><span class="vd vd-win">Tech angle winner</span></td>
+      </tr>
+      <tr>
+        <td>Kuru · Best Seller Bundle <span class="url-tag">kurufootwear.com/pages/bundles/best-seller-bundle</span></td>
+        <td><span class="fmt fmt-bundle">Bundle PDP</span></td>
+        <td>"2 Shoes + Socks, Save $40." AOV maximizer. Standard Shopify bundle, no dedicated LP content.</td>
+        <td>Bundle selector → product images → add to cart. Minimal copy.</td>
+        <td><span class="vd vd-gap">Functional only</span></td>
+      </tr>
+      <tr>
+        <td>Orthofeet · orthopedic-shoes <span class="url-tag">orthofeet.com/pages/orthopedic-shoes</span></td>
+        <td><span class="fmt fmt-seo">SEO Collection</span></td>
+        <td>SEO-driven condition navigation. Deep taxonomy by condition, activity, fit. Built for organic "orthopedic shoes for X" — not paid traffic.</td>
+        <td>Nav-heavy → condition filters → product grid. Zero conversion architecture.</td>
+        <td><span class="vd vd-miss">Not a paid LP</span></td>
+      </tr>
+      <tr>
+        <td>Orthofeet · orthopedic-walking-shoes <span class="url-tag">orthofeet.com/pages/orthopedic-walking-shoes</span></td>
+        <td><span class="fmt fmt-seo">SEO Collection</span></td>
+        <td>Same pattern. 60-day wear test prominent in header. Built for search, not conversion.</td>
+        <td>Promo bar → product grid → condition filter sidebar. No LP content.</td>
+        <td><span class="vd vd-miss">Not a paid LP</span></td>
+      </tr>
+      <tr>
+        <td>Orthofeet · spring-summer-2026 <span class="url-tag">orthofeet.com/pages/spring-summer-2026-collection</span></td>
+        <td><span class="fmt fmt-seo">Seasonal Collection</span></td>
+        <td>Seasonal product launch + promotional discount. Works on brand loyalty, not cold traffic conversion.</td>
+        <td>Hero banner → sale promo → product grid.</td>
+        <td><span class="vd vd-miss">Brand / retargeting only</span></td>
+      </tr>
+      <tr>
+        <td>[vrsn] · Goldilocks LP <span class="url-tag">vrsn.co/pages/goldilocks</span></td>
+        <td><span class="fmt fmt-hybrid">Hybrid PDP-Lite</span></td>
+        <td>"Relief today. Strength tomorrow." Goldilocks positioning. Social proof count, free shipping, review quotes. Clean but thin on persuasion architecture.</td>
+        <td>Hero → tagline → review count + trust signals → product + features. No tech explainer. No comparison. No quiz.</td>
+        <td><span class="vd vd-gap">Good brand, weak funnel</span></td>
+      </tr>
+      <tr>
+        <td>[vrsn] · PDP (Women's) <span class="url-tag">vrsn.co/products/womens-pain-relief-sneaker</span></td>
+        <td><span class="fmt fmt-pdp">Standard PDP</span></td>
+        <td>Standard Shopify PDP. Good social proof, travel reviews, machine washable feature. Built for warm/retargeting, wrong for cold traffic.</td>
+        <td>Product images → variant selector → add to cart → feature tabs → reviews.</td>
+        <td><span class="vd vd-gap">Right page, wrong job</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 2: COMPETITOR SCORES ═══ -->
+<section class="section fi" id="competitors">
+  <div class="sec-label">Section 02 · Competitor Scores</div>
+  <h2>Funnel Performance by Brand</h2>
+  <p class="sub">Scored across the 4 dimensions that determine paid funnel effectiveness.</p>
+
+  <div class="comp-grid">
+    <div class="comp-card">
+      <span class="c-badge cb-vrsn">VRSN — current</span>
+      <div class="comp-title">Hybrid LP + Generic PDP</div>
+      <div class="comp-body">One landing page handles all cold traffic. No dedicated advertorial, listicle, or quiz. Thin on persuasion architecture. Strong brand voice, weak conversion structure.</div>
+      <div class="scores">
+        <div class="sc-row"><span class="sc-lbl">Pain agitation</span><div class="sc-track"><div class="sc-fill sf-weak" data-w="20"></div></div><span class="sc-val">2/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Proof density</span><div class="sc-track"><div class="sc-fill sf-med" data-w="40"></div></div><span class="sc-val">4/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Offer clarity</span><div class="sc-track"><div class="sc-fill sf-med" data-w="50"></div></div><span class="sc-val">5/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Message match</span><div class="sc-track"><div class="sc-fill sf-med" data-w="50"></div></div><span class="sc-val">5/10</span></div>
+      </div>
+      <div class="verdict v-loss">Critical gap: one generic funnel handles all traffic temperatures and angles.</div>
+    </div>
+
+    <div class="comp-card hi">
+      <span class="c-badge cb-kuru">KURU — 5 pages</span>
+      <div class="comp-title">Systematic Multi-Format Ecosystem</div>
+      <div class="comp-body">Mature testing matrix. p-m-kuru-v2 is a deep advertorial — video hero, 58k reviews, tech explainer, UGC stack. A/B testing v1 vs v2 in parallel. Shoe finder quiz on every page.</div>
+      <div class="scores">
+        <div class="sc-row"><span class="sc-lbl">Pain agitation</span><div class="sc-track"><div class="sc-fill sf-strong" data-w="80"></div></div><span class="sc-val">8/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Proof density</span><div class="sc-track"><div class="sc-fill sf-strong" data-w="90"></div></div><span class="sc-val">9/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Offer clarity</span><div class="sc-track"><div class="sc-fill sf-strong" data-w="75"></div></div><span class="sc-val">7.5/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Message match</span><div class="sc-track"><div class="sc-fill sf-strong" data-w="85"></div></div><span class="sc-val">8.5/10</span></div>
+      </div>
+      <div class="verdict v-win">Gold standard in this space. Model VRSN's advertorial structure directly on p-m-kuru-v2.</div>
+    </div>
+
+    <div class="comp-card">
+      <span class="c-badge cb-ortho">Orthofeet — 3 pages</span>
+      <div class="comp-title">SEO Category Pages — Weak Paid LPs</div>
+      <div class="comp-body">Paid LPs are actually SEO collection pages. No narrative, no tech proof. Key strength: 60-day wear test (strongest risk-reversal in the space) and condition-specific URL architecture.</div>
+      <div class="scores">
+        <div class="sc-row"><span class="sc-lbl">Pain agitation</span><div class="sc-track"><div class="sc-fill sf-med" data-w="40"></div></div><span class="sc-val">4/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Proof density</span><div class="sc-track"><div class="sc-fill sf-med" data-w="50"></div></div><span class="sc-val">5/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Offer clarity</span><div class="sc-track"><div class="sc-fill sf-strong" data-w="80"></div></div><span class="sc-val">8/10</span></div>
+        <div class="sc-row"><span class="sc-lbl">Message match</span><div class="sc-track"><div class="sc-fill sf-weak" data-w="30"></div></div><span class="sc-val">3/10</span></div>
+      </div>
+      <div class="verdict v-med">Steal: 60-day trial offer mechanic. Beat them: narrative-driven paid LPs. Their paid funnel is weak.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 3: BRAND BREAKDOWN ═══ -->
+<section class="section fi" id="breakdown">
+  <div class="sec-label">Section 03 · Brand Breakdown</div>
+  <h2>Format Patterns by Brand</h2>
+  <p class="sub">What each brand has mastered, what they're ignoring, and what this means for [vrsn]'s build priorities.</p>
+
+  <div class="analysis-grid">
+    <div class="analysis-card">
+      <div class="ac-brand">Kuru Footwear</div>
+      <span class="strength-tag st-kuru">Most Sophisticated Funnel</span>
+      <h3>What Kuru Has Built Well</h3>
+      <ul>
+        <li><strong>Multiple LP variants tested in parallel.</strong> p-m-kuru vs p-m-kuru-v2 are active A/B variants — one authority-first, one relatability-first.</li>
+        <li><strong>Standalone tech credibility page.</strong> p-tech-concept handles "why does this work?" before the PDP. [vrsn] has zero equivalent.</li>
+        <li><strong>Listicle as a separate traffic asset.</strong> Video per section, skimmer-friendly. Works well from cold Meta traffic.</li>
+        <li><strong>Quantified proof claims.</strong> 72% report relief, 97% in 4 weeks — not just reviews. These function as objection killers in the scroll.</li>
+        <li><strong>HSA/FSA badge prominent on v2.</strong> Price-objection pre-empt at $130–170. [vrsn] doesn't use this lever at all.</li>
+        <li><strong>Shoe finder quiz as primary CTA.</strong> Every page funnels to the quiz — reduces choice paralysis and captures intent data.</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card">
+      <div class="ac-brand">Kuru Footwear</div>
+      <span class="strength-tag st-kuru">Gaps [vrsn] Can Exploit</span>
+      <h3>What Kuru Is Leaving on the Table</h3>
+      <ul>
+        <li><strong>No lifestyle angle anywhere.</strong> Every page is pain-first and clinical. No travel stories, no adventure proof, no identity angle.</li>
+        <li><strong>No barefoot/orthotics-exit angle.</strong> Committed to the support-dependency model. Cannot run the "getting stronger" narrative.</li>
+        <li><strong>No machine washable mention on any LP.</strong> Not a feature they have — [vrsn] can own this uncontested.</li>
+        <li><strong>No condition-specific advertorial pages.</strong> No dedicated PF story, no Achilles angle, no "after barefoot shoes failed me" hook.</li>
+        <li><strong>Bundle page has no LP content.</strong> A missed AOV opportunity — just a Shopify template.</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card">
+      <div class="ac-brand">Orthofeet</div>
+      <span class="strength-tag st-ortho">SEO Machine, No Paid Funnel</span>
+      <h3>What Orthofeet Relies On</h3>
+      <ul>
+        <li><strong>Pure SEO taxonomy architecture.</strong> Every LP is a filtered collection page for "orthopedic shoes for X" queries. No paid conversion architecture visible.</li>
+        <li><strong>60-day wear test as primary trust lever.</strong> Site-wide in promo bar. The category's strongest risk-reversal mechanic — but applied generically, not in LP narrative.</li>
+        <li><strong>No listicle, no advertorial, no quiz.</strong> Their paid funnel is either non-existent or invisible from the pages shared.</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card">
+      <div class="ac-brand">[vrsn] Current State</div>
+      <span class="strength-tag st-vrsn">Strong Brand, Thin Funnel</span>
+      <h3>What [vrsn] Has Now</h3>
+      <ul>
+        <li><strong>One landing page (Goldilocks).</strong> Clean, branded, but thin on persuasion architecture. No tech proof, no comparison, no quiz, no condition angle.</li>
+        <li><strong>Standard PDP.</strong> Correct for warm retargeting, wrong for cold Meta traffic. The PDP closes, it doesn't convince.</li>
+        <li><strong>Zero advertorials, zero listicles, zero quiz.</strong> [vrsn] should own the "Goldilocks gap" comparison angle — it's literally the positioning — but there's no page that executes it.</li>
+      </ul>
+    </div>
+
+    <div class="analysis-card full key-finding">
+      <div class="kf-lbl">Key Finding</div>
+      <p style="font-size:14px;line-height:1.7;color:var(--text)">Kuru is running the most sophisticated DTC pain-relief LP library in the category. But their entire funnel is built on one pillar — <strong>tech authority + pain relief</strong> — and it has a clear ceiling: it speaks exclusively to buyers who already accept the medical/clinical framing of foot pain. They have zero pages targeting the lifestyle buyer, the traveller, the post-barefoot casualty, or the orthotics-exit buyer. [vrsn]'s entire advantage comes from the white space Kuru's funnel model structurally cannot address. The build plan below is designed to match Kuru's format depth while occupying angles they cannot enter.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 4: FORMAT MATRIX ═══ -->
+<section class="section fi" id="matrix">
+  <div class="sec-label">Section 04 · Format Matrix</div>
+  <h2>Who Has What, Format by Format</h2>
+  <p class="sub">Kuru has the deepest LP library. [vrsn] currently has 1. This is the gap we're closing.</p>
+
+  <div class="matrix">
+    <div class="mx-hdr">Format</div>
+    <div class="mx-hdr">Kuru</div>
+    <div class="mx-hdr">Orthofeet</div>
+    <div class="mx-hdr hl">[vrsn] Now → Target</div>
+
+    <div class="mx-cell label">PDP-style LP</div>
+    <div class="mx-cell"><span class="chk">✓</span> Goldilocks-equivalent</div>
+    <div class="mx-cell"><span class="prt">~</span> Collection pages only</div>
+    <div class="mx-cell hl"><span class="prt">~</span> 1 generic → <strong>+3 angled</strong></div>
+
+    <div class="mx-cell label">Tech Explainer</div>
+    <div class="mx-cell"><span class="chk">✓</span> p-tech-concept</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>+1 embedded in PDPs</strong></div>
+
+    <div class="mx-cell label">Listicle / "X Reasons"</div>
+    <div class="mx-cell"><span class="chk">✓</span> p-m-5reasonswhy</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>+3</strong></div>
+
+    <div class="mx-cell label">Advertorial / Long-form</div>
+    <div class="mx-cell"><span class="chk">✓</span> p-m-kuru + p-m-kuru-v2</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>+3</strong></div>
+
+    <div class="mx-cell label">Comparison / "vs" Article</div>
+    <div class="mx-cell"><span class="prt">~</span> Embedded in tech page</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>+3 in listicles</strong></div>
+
+    <div class="mx-cell label">Quiz Funnel</div>
+    <div class="mx-cell"><span class="chk">✓</span> Shoe Finder (every page)</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>+1</strong></div>
+
+    <div class="mx-cell label">Condition-specific LP</div>
+    <div class="mx-cell"><span class="chk">✓</span> PF, Achilles, heel pain</div>
+    <div class="mx-cell"><span class="chk">✓</span> Full SEO taxonomy</div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>embedded in advertorials</strong></div>
+
+    <div class="mx-cell label">A/B LP variants</div>
+    <div class="mx-cell"><span class="chk">✓</span> v1 + v2 active</div>
+    <div class="mx-cell"><span class="crs">✗</span></div>
+    <div class="mx-cell hl"><span class="crs">✗</span> 0 → <strong>Phase 2</strong></div>
+
+    <div class="mx-cell label">Lifestyle angle</div>
+    <div class="mx-cell"><span class="crs">✗</span> None</div>
+    <div class="mx-cell"><span class="crs">✗</span> None</div>
+    <div class="mx-cell hl"><span class="star">★</span> <strong>Exclusive to [vrsn]</strong></div>
+
+    <div class="mx-cell label">Machine Washable LP</div>
+    <div class="mx-cell"><span class="crs">✗</span> None</div>
+    <div class="mx-cell"><span class="crs">✗</span> None</div>
+    <div class="mx-cell hl"><span class="star">★</span> <strong>Built into PDP Angle 01</strong></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 5: FORMAT VERDICT ═══ -->
+<section class="section fi" id="formats">
+  <div class="sec-label">Section 05 · Format Verdict</div>
+  <h2>What the Market Proves Works</h2>
+  <p class="sub">Keep all 4 formats as sold. Kuru proves listicle and advertorial formats convert in this category. No swaps recommended.</p>
+
+  <div class="insight" style="margin-bottom:20px">
+    <div class="insight-lbl">Format recommendation</div>
+    <div class="insight-title">Keep all 4 formats as sold</div>
+    <div class="insight-body">Kuru proves that the listicle and advertorial formats convert in this category — they're running both in active A/B tests. The quiz funnel is the only format with no direct competitor equivalent, making it highest-upside and lowest-risk. The only adjustment: PDP-style pages should be angled around specific buyer identity (traveller, barefoot convert, active professional) rather than being generic.</div>
+  </div>
+
+  <div class="fmt-grid">
+    <div class="fmt-card hi">
+      <span class="fmt fmt-adv" style="margin-bottom:10px;display:inline-block">Advertorial</span>
+      <div class="fmt-card-title">Proven Winner</div>
+      <div class="fmt-card-body">KURU's p-m-kuru-v2 is the benchmark — long-form pain narrative + tech credibility + testimonials + quiz CTA. Converts skeptical cold traffic best. Story-first beats tech-first for emotional buyers. This is the primary cold traffic workhorse.</div>
+      <div class="verdict v-win" style="margin-top:10px">VRSN must build this first.</div>
+    </div>
+    <div class="fmt-card hi">
+      <span class="fmt fmt-listicle" style="margin-bottom:10px;display:inline-block">Listicle</span>
+      <div class="fmt-card-title">Proven Winner</div>
+      <div class="fmt-card-body">KURU's "5 Reasons" page is a clean execution. Numbered format reduces cognitive load, works well for warming mid-funnel traffic. Low design complexity, high creative ROI. Easy to write with specific hooks per reason.</div>
+      <div class="verdict v-win" style="margin-top:10px">VRSN must build this.</div>
+    </div>
+    <div class="fmt-card">
+      <span class="fmt fmt-pdp" style="margin-bottom:10px;display:inline-block">PDP-style</span>
+      <div class="fmt-card-title">Proven — With Upgrades</div>
+      <div class="fmt-card-body">Standard PDPs underperform for cold traffic. Winning variant: angle-specific "hybrid PDP" with identity-specific headline above fold, then product features, then curated reviews. Different from Goldilocks by being buyer-persona-specific, not generic.</div>
+      <div class="verdict v-med" style="margin-top:10px">VRSN needs angle-specific PDPs.</div>
+    </div>
+    <div class="fmt-card hi">
+      <span class="fmt fmt-quiz" style="margin-bottom:10px;display:inline-block">Quiz Funnel</span>
+      <div class="fmt-card-title">Highest Upside</div>
+      <div class="fmt-card-body">KURU routes every LP to a quiz CTA — it's the connective tissue of their funnel. Quizzes segment and personalize, leading to higher AOV and CVR. Once live, becomes the CTA destination for every other page. Also generates buyer insight data for phase 2.</div>
+      <div class="verdict v-win" style="margin-top:10px">Build first — unlocks everything else.</div>
+    </div>
+    <div class="fmt-card">
+      <span class="fmt fmt-bundle" style="margin-bottom:10px;display:inline-block">VSL</span>
+      <div class="fmt-card-title">Not Dominant Here</div>
+      <div class="fmt-card-body">Neither KURU nor Orthofeet runs a classic VSL LP. Video is embedded inside advertorials as supporting element, not primary mechanic. This space is copy + proof-first, not video-first. Skip as standalone format.</div>
+      <div class="verdict v-med" style="margin-top:10px">Embed video inside advertorials instead.</div>
+    </div>
+    <div class="fmt-card hi-b">
+      <span class="fmt fmt-listicle" style="margin-bottom:10px;display:inline-block">Comparison Article</span>
+      <div class="fmt-card-title">White Space — Nobody Owns It</div>
+      <div class="fmt-card-body">KURU has a basic vs-table on one page. Nobody runs a true editorial comparison in paid media. This format captures high-intent paid traffic AND ranks organically. VRSN can own this before any competitor builds it.</div>
+      <div class="verdict v-win" style="margin-top:10px">First-mover advantage available now.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 6: WHITE SPACE ═══ -->
+<section class="section fi" id="whitespace">
+  <div class="sec-label">Section 06 · White Space Map</div>
+  <h2>Angles Nobody Owns</h2>
+  <p class="sub">Three positioning angles VRSN can claim before any competitor discovers them.</p>
+
+  <div class="insight">
+    <div class="insight-lbl">Primary differentiator — unclaimable by Kuru</div>
+    <div class="insight-title">"Relief today. Strength tomorrow." — no competitor claims this</div>
+    <div class="insight-body">Every competitor positions around pain relief and comfort. Kuru: "relief in motion." Orthofeet: "clinical comfort." Nobody claims the shoe actively strengthens your feet over time. [vrsn] has this in its tagline but it's built into zero LPs. The "orthotics exit" advertorial angle (dependency → independence) is structurally unclaimable by Kuru, Vionic, or Orthofeet — they are all dependency products.</div>
+  </div>
+
+  <div class="ws-box">
+    <div class="ws-lbl">White space #2</div>
+    <div class="ws-title">The barefoot betrayal buyer</div>
+    <div class="ws-body">The barefoot-to-injury pipeline is well documented. Vivobarefoot/Xero converts who got hurt are large, active online (r/BarefootRunning), and have zero brand addressing them. [vrsn]'s "Goldilocks" positioning is the literal answer to their problem — not too zero-drop, not too orthotic. Nobody is running this angle.</div>
+  </div>
+
+  <div class="ws-box">
+    <div class="ws-lbl">White space #3</div>
+    <div class="ws-title">The editorial "best foot pain shoes 2026" comparison article</div>
+    <div class="ws-body">Neither Kuru nor Orthofeet runs a true editorial-style "best of" comparison in paid. A "best shoes for foot pain 2026 — ranked" LP captures high-intent paid AND ranks organically. VRSN wins on the criteria VRSN owns. Double-function asset. Nobody in the space has built this.</div>
+  </div>
+
+  <div class="crowded-box">
+    <div class="crowded-lbl">Angles getting crowded — avoid or differentiate</div>
+    <div class="crowded-item"><span class="ca">→</span><span><strong>Generic heel/arch pain relief</strong> — Kuru dominates with 58k reviews and 2M pairs sold. Don't compete head-to-head without a strong differentiator angle.</span></div>
+    <div class="crowded-item"><span class="ca">→</span><span><strong>Plantar fasciitis as primary cold traffic hook</strong> — heavily saturated across the category. Use as a targeting angle (condition-specific PDP) but not as top-of-funnel primary message.</span></div>
+    <div class="crowded-item"><span class="ca">→</span><span><strong>"X% of customers report pain relief" stats</strong> — Kuru uses 72%/97% heavily across all pages. This proof format is now table stakes, not a differentiator.</span></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 7: PDP ANGLES ═══ -->
+<section class="section fi" id="pdp">
+  <div class="sec-label">Section 07 · LP Build Plan — PDP-Style</div>
+  <h2>PDP-Style Pages — 3 Angles</h2>
+  <p class="sub">Long-form product pages that read like editorial PDPs. Deep feature proof, tech explanation, reviews in context, single strong CTA. Different from Goldilocks by being angle-specific and persona-targeted, not generic. Structure: Hero hook → problem agitation → product intro → tech proof → feature bullets → testimonials → objection handling → CTA.</p>
+
+  <div class="plan-type">
+    <div class="plan-type-hdr">
+      <div class="plan-num">01</div>
+      <div>
+        <h3>PDP-Style Pages</h3>
+        <p>Angle-specific product pages built around distinct buyer personas. Not generic. Not Goldilocks 2.0.</p>
+      </div>
+      <div class="plan-meta">
+        <span class="fmt fmt-pdp">PDP-Style</span>
+        <span class="vd vd-win" style="font-size:10px;font-family:'DM Mono',monospace">Keep format</span>
+      </div>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 01 of 03</div>
+      <div class="angle-title">The Machine Washable Pain Relief Sneaker</div>
+      <div class="hook-lbl">Hero headline</div>
+      <div class="hook">"The only pain relief sneaker you can throw in the washing machine. Because your feet deserve clean shoes too."</div>
+      <ul>
+        <li><strong>Problem:</strong> Foot pain buyers wear their shoes 14+ hrs/day. Hygiene is a medical need, not a lifestyle preference.</li>
+        <li><strong>Tech section:</strong> OrthoLite insoles + SweetFoam cushioning still intact after wash. No other pain-relief shoe survives the machine.</li>
+        <li><strong>Comparison beat:</strong> Kuru: not washable. Vionic: not washable. Orthofeet: not washable. [vrsn]: the exception.</li>
+        <li><strong>Testimonial angle:</strong> Pull reviews that mention washing specifically ("I've washed mine 12 times, still look new").</li>
+        <li><strong>CTA:</strong> "Get pain relief + stay clean → Shop Now"</li>
+      </ul>
+      <span class="audience-tag">Healthcare · Hospitality · On-feet 8+ hrs</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 02 of 03</div>
+      <div class="angle-title">For People Whose Barefoot Shoes Hurt Them</div>
+      <div class="hook-lbl">Hero headline</div>
+      <div class="hook">"You switched to barefoot shoes to be healthier. Then your Achilles gave out. Here's what you should have worn instead."</div>
+      <ul>
+        <li><strong>Audience:</strong> r/BarefootRunning refugees, Vivobarefoot/Xero converts with injuries, zero-drop urban walkers.</li>
+        <li><strong>Positioning:</strong> [vrsn] is the middle ground — not zero-drop minimalist, not clinical support. The Goldilocks positioning is the literal answer.</li>
+        <li><strong>Tech section:</strong> "Your feet need natural movement AND protection. SweetFoam absorbs concrete impact without forcing an unnatural position."</li>
+        <li><strong>Testimonial angle:</strong> Buyers mentioning Achilles recovery or switching from barefoot brands.</li>
+        <li><strong>CTA:</strong> "Find the middle ground → Shop [vrsn]"</li>
+      </ul>
+      <span class="audience-tag">Vivobarefoot refugees · Zero-drop injured · Urban walkers</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 03 of 03</div>
+      <div class="angle-title">The Travel Shoe That Solves Foot Pain</div>
+      <div class="hook-lbl">Hero headline</div>
+      <div class="hook">"20,000 steps a day in Japan. 3 weeks in Europe. Machu Picchu twice. Your feet shouldn't be the reason you slow down."</div>
+      <ul>
+        <li><strong>Audience:</strong> International travellers 35–60, Rick Steves demo, cobblestone-street walkers, adventure-comfort seekers.</li>
+        <li><strong>Feature angle:</strong> Machine washable (cobblestones + mud), all-day cushioning (20K steps), lightweight, versatile style (works at dinner).</li>
+        <li><strong>Testimonial anchor:</strong> Use verified Japan, Machu Picchu, Atlas Mountains, Frankfurt quotes verbatim.</li>
+        <li><strong>Objection:</strong> "But do they look good enough to wear everywhere?" — style section with outfit pairings.</li>
+        <li><strong>CTA:</strong> "Pack one pair. Walk everywhere → Shop [vrsn]"</li>
+      </ul>
+      <span class="audience-tag">International travellers · 35–60 · High-income · Cobblestone audience</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 8: ADVERTORIALS ═══ -->
+<section class="section fi" id="advertorials">
+  <div class="sec-label">Section 08 · LP Build Plan — Advertorials</div>
+  <h2>Advertorials — 3 Angles</h2>
+  <p class="sub">Long-form editorial-style pages that read like an article, not a product page. No visible brand nav. Starts with a personal story, agitates the problem, introduces solution around the 40% scroll mark. Structure: Story hook → problem escalation → discovery moment → product as solution → proof → CTA with urgency.</p>
+
+  <div class="plan-type">
+    <div class="plan-type-hdr">
+      <div class="plan-num">02</div>
+      <div>
+        <h3>Advertorials</h3>
+        <p>Story-first. Kuru is tech-authority-first. [vrsn] should be story-first — this is the angle gap.</p>
+      </div>
+      <div class="plan-meta">
+        <span class="fmt fmt-adv">Advertorial</span>
+        <span class="vd vd-win" style="font-size:10px;font-family:'DM Mono',monospace">Keep format</span>
+      </div>
+    </div>
+
+    <div class="plan-note">
+      <strong>Advertorial note:</strong> Kuru runs p-m-kuru as a hybrid advertorial — not pure editorial, but long-form with a personal narrative spine. Their v2 opens with "Real Talk — What even IS a Kuru?" [vrsn]'s advertorials should lean harder into story format, which Kuru avoids. Kuru is tech-authority-first. [vrsn] should be story-first. This is the angle gap.
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 01 of 03 — Build #2, highest priority</div>
+      <div class="angle-title">The Plantar Fasciitis Story: "I Finally Found What Actually Fixed It"</div>
+      <div class="hook-lbl">Opening story hook</div>
+      <div class="hook">"I'd spent 3 years managing my plantar fasciitis. Orthotics. Night splints. Three different shoe brands. I wasn't trying to fix it anymore — I was just trying to make it through the day."</div>
+      <ul>
+        <li><strong>Character:</strong> 42-year-old woman, on her feet all day (nurse / teacher / retail), chronic PF for 2+ years, has tried everything.</li>
+        <li><strong>Problem escalation:</strong> The morning hobble. Cancelled walks. The cortisone shot that lasted 6 weeks. The podiatrist recommending $400 custom orthotics.</li>
+        <li><strong>Discovery:</strong> Friend recommended [vrsn]. Skeptical. The "relief today, strength tomorrow" promise felt different.</li>
+        <li><strong>Product as solution:</strong> OrthoLite + SweetFoam in natural language. "It's not a support shoe and it's not barefoot — it's the thing that was missing."</li>
+        <li><strong>Proof section:</strong> 3–4 real buyer testimonials with similar profiles. Dr. Ashford DPM quote.</li>
+        <li><strong>CTA:</strong> "If you've tried everything else — try this one. 100-day guarantee, free returns."</li>
+      </ul>
+      <span class="audience-tag">Chronic PF · "Tried everything" buyer · 35–55 women</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 02 of 03 — Build #6</div>
+      <div class="angle-title">The Orthotics Exit: "My Podiatrist Said I'd Need These Forever. I Stopped After 8 Months."</div>
+      <div class="hook-lbl">Opening story hook</div>
+      <div class="hook">"Custom orthotics: $380. Insurance: covered 50%. My feet after 4 years: still dependent on them. My physio finally told me the truth — the orthotics were keeping me reliant, not making me stronger."</div>
+      <ul>
+        <li><strong>Character:</strong> 38-year-old, runner or active professional, has worn orthotics for years, feels trapped by them.</li>
+        <li><strong>Problem escalation:</strong> Never getting better — only managing. The cost. The inconvenience. The fear of removing them.</li>
+        <li><strong>Product as solution:</strong> "Relief today, Strength tomorrow" — foot muscles working instead of being replaced. Not a dependency product.</li>
+        <li><strong>Science hook:</strong> Meta-analysis 2021 — "exercise alone beats orthotics alone for pain relief." One sentence. No jargon.</li>
+        <li><strong>CTA:</strong> "The shoe designed to make itself unnecessary. → Shop [vrsn]"</li>
+      </ul>
+      <span class="audience-tag">Long-term orthotic users · Physio patients · Health-conscious 35–55</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle 03 of 03 — Build #9</div>
+      <div class="angle-title">The Active Lifestyle Intervention: "I Thought Foot Pain Was Just My Life Now"</div>
+      <div class="hook-lbl">Opening story hook</div>
+      <div class="hook">"At 47, I stopped hiking. Stopped walking my neighbourhood at night. Stopped planning trips that involved cobblestones. Not because I got old — because my feet made every step hurt."</div>
+      <ul>
+        <li><strong>Character:</strong> Active 40–55 buyer whose foot pain has directly reduced their quality of life — travel, exercise, social.</li>
+        <li><strong>Problem escalation:</strong> Activities they've given up. The identity loss. Not a medical problem — a life problem.</li>
+        <li><strong>Product as solution:</strong> The first pair they wore for a full walk. The first trip they planned without checking the pavement. Lifestyle restoration, not pain management.</li>
+        <li><strong>CTA:</strong> "Stop managing it. Start fixing it. → Shop [vrsn]"</li>
+      </ul>
+      <span class="audience-tag">Active 40–55 · Life-limiting pain · Identity-led buyers</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 9: LISTICLES ═══ -->
+<section class="section fi" id="listicles">
+  <div class="sec-label">Section 09 · LP Build Plan — Listicles</div>
+  <h2>Listicles / Comparison Pages — 3 Angles</h2>
+  <p class="sub">Numbered format. Skimmer-friendly. Works well for mid-funnel traffic who've seen an ad but aren't ready to buy. Kuru's "5 Reasons" page is the format benchmark.</p>
+
+  <div class="plan-type">
+    <div class="plan-type-hdr">
+      <div class="plan-num">03</div>
+      <div>
+        <h3>Listicles</h3>
+        <p>Low design complexity, high creative ROI. Easiest format to write and test quickly.</p>
+      </div>
+      <div class="plan-meta">
+        <span class="fmt fmt-listicle">Listicle</span>
+        <span class="vd vd-win" style="font-size:10px;font-family:'DM Mono',monospace">Keep format</span>
+      </div>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle L1 — Build #8</div>
+      <div class="angle-title">"7 Signs Your Shoes Are Making Your Foot Pain Worse (Not Better)"</div>
+      <div class="hook-lbl">Opening hook</div>
+      <div class="hook">"Most people don't realise that the support they think is helping them is actually preventing their feet from getting stronger. Here's how to tell."</div>
+      <ul>
+        <li><strong>Format:</strong> Problem-first. Each item describes a feeling the reader has likely experienced. No competitor naming — the content disqualifies current shoes by description.</li>
+        <li><strong>Audience:</strong> Cold traffic who don't yet understand why they're in pain. Broad interest targeting.</li>
+        <li><strong>CTA flow:</strong> Each item links to the quiz. CTA at bottom: "Take the quiz — find the right fix."</li>
+      </ul>
+      <span class="audience-tag">Cold traffic · Self-diagnosis audience · Broad targeting</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle L2 — Build #4</div>
+      <div class="angle-title">"[vrsn] vs Kuru vs Hoka vs Orthofeet: The Honest Comparison (2026)"</div>
+      <div class="hook-lbl">Opening hook</div>
+      <div class="hook">"We spent 6 weeks testing the most-recommended pain relief shoes on the market. Here's what we found — including the one thing every other brand gets wrong."</div>
+      <ul>
+        <li><strong>Format:</strong> Editorial comparison. Third-party style. Formal scoring rubric. [vrsn] wins on the dimensions [vrsn] owns: strength-building, machine washable, style-forward.</li>
+        <li><strong>Audience:</strong> Research-mode buyers comparing brands. High intent. Need a destination before landing on Kuru's site.</li>
+        <li><strong>Organic upside:</strong> Strong share potential. Reviewers reference comparison articles. Can be repurposed as PR content.</li>
+        <li><strong>CTA:</strong> "Skip the research — take the quiz and find your fit."</li>
+      </ul>
+      <span class="audience-tag">High-intent · Research mode · Competitor traffic</span>
+    </div>
+
+    <div class="angle-card">
+      <div class="angle-num">Angle L3 — Build #10</div>
+      <div class="angle-title">"7 Things Reddit Actually Says About Pain Relief Shoes (We Read 3,000 Posts)"</div>
+      <div class="hook-lbl">Opening hook</div>
+      <div class="hook">"We spent two weeks going through r/PlantarFasciitis, r/BarefootRunning, and r/footpain. Here's what real people say — not what the brands want you to hear."</div>
+      <ul>
+        <li><strong>Format:</strong> Community-wisdom. Highest trust, lowest sales pressure. Converts skeptical researchers who distrust brand claims.</li>
+        <li><strong>Audience:</strong> Retargeting. People who've seen the brand but haven't bought. They're doing independent research.</li>
+        <li><strong>Structure:</strong> Curate real Reddit insights, then show [vrsn] as the shoe that addresses them. Authentic voice — no superlatives, no "best ever."</li>
+        <li><strong>CTA:</strong> "See for yourself — 100-day guarantee."</li>
+      </ul>
+      <span class="audience-tag">Retargeting · Skeptical researchers · Reddit community audience</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 10: QUIZ ═══ -->
+<section class="section fi" id="quiz">
+  <div class="sec-label">Section 10 · LP Build Plan — Quiz Funnel</div>
+  <h2>Quiz Funnel — Build First</h2>
+  <p class="sub">The quiz is the connective tissue of the entire funnel. Once live it becomes the CTA destination for every other LP. Kuru routes all pages through their quiz. Every LP built without a quiz CTA is missing its conversion layer.</p>
+
+  <div class="quiz-block">
+    <div class="quiz-hdr">Quiz: "Find your [vrsn] — which pain relief program is right for your feet?"</div>
+    <div class="quiz-questions">
+      <div class="quiz-q"><strong>Q1 — Primary pain type:</strong> Heel / Arch / Ball of foot / General fatigue / Knee or back pain from standing</div>
+      <div class="quiz-q"><strong>Q2 — Duration + severity:</strong> Occasional discomfort / Daily pain that limits activity / Chronic, have tried treatments</div>
+      <div class="quiz-q"><strong>Q3 — Prior solutions tried:</strong> Insoles only / Branded support shoes (Kuru, Hoka, Brooks) / Custom orthotics / Nothing yet</div>
+      <div class="quiz-q"><strong>Q4 — Primary priority:</strong> Immediate pain relief / Long-term foot strength / Style + function combined / Travel + all-day wear</div>
+      <div class="quiz-q"><strong>Result paths → personalised PDP angle:</strong>
+        <br>Chronic PF path → Advertorial A1 (PF story page)
+        <br>Orthotics user → Advertorial A2 (orthotics exit)
+        <br>Travel audience → PDP Angle A3 (travel)
+        <br>Barefoot refugee → PDP Angle A2 (barefoot betrayal)
+        <br>Prevention / active → Custom result page
+      </div>
+    </div>
+    <div class="quiz-flow">
+      <div class="qf-step">
+        <div class="qf-step-lbl">Q1</div>
+        <div class="qf-step-t">Pain type</div>
+      </div>
+      <div class="qf-arrow">→</div>
+      <div class="qf-step">
+        <div class="qf-step-lbl">Q2</div>
+        <div class="qf-step-t">Duration + severity</div>
+      </div>
+      <div class="qf-arrow">→</div>
+      <div class="qf-step">
+        <div class="qf-step-lbl">Q3</div>
+        <div class="qf-step-t">Prior solutions</div>
+      </div>
+      <div class="qf-arrow">→</div>
+      <div class="qf-step">
+        <div class="qf-step-lbl">Q4</div>
+        <div class="qf-step-t">Top priority</div>
+      </div>
+      <div class="qf-arrow">→</div>
+      <div class="qf-step">
+        <div class="qf-step-lbl">Result</div>
+        <div class="qf-step-t">Personalised PDP angle</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ═══ SECTION 11: PRIORITY ═══ -->
+<section class="section fi" id="priority">
+  <div class="sec-label">Section 11 · Build Order</div>
+  <h2>Build Sequence — What to Build First</h2>
+  <p class="sub">Sequenced by leverage: what unlocks the most other things, and what's burning budget without it. The quiz goes first — not the advertorial — because it becomes the CTA for every subsequent page.</p>
+
+  <div class="insight" style="margin-bottom:24px">
+    <div class="insight-lbl">One thing to do before building page 1</div>
+    <div class="insight-title">Get Dr. Ashford DPM on camera for 60 seconds</div>
+    <div class="insight-body">Kuru's p-m-kuru-v2 and Vionic both embed a credentialed doctor in their funnel. [vrsn] has Dr. Ashford as a brand asset but he doesn't appear on any LP or in any ad. Even one static quote with his photo and credentials, embedded in the advertorials and PDP pages, immediately elevates trust signals to match Kuru's standard. This is zero-cost leverage from an asset [vrsn] already has.</div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pc urgent">
+      <div class="pc-order">Build #1 · Urgent</div>
+      <div class="pc-title">Quiz Funnel</div>
+      <div class="pc-why">Once live, becomes the CTA on every other LP. Kuru routes all LPs through their quiz. Every LP built without a quiz is missing its conversion layer. Build first — also generates buyer insight data for phase 2 creative strategy.</div>
+    </div>
+    <div class="pc urgent">
+      <div class="pc-order">Build #2 · Urgent</div>
+      <div class="pc-title">Advertorial A1 · PF Story</div>
+      <div class="pc-why">Most universal entry point for cold traffic. PF is the #1 search intent in the category. Covers the largest audience and is the closest equivalent to Kuru's p-m-kuru (their top performer). Build and test immediately alongside the quiz.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #3</div>
+      <div class="pc-title">PDP Angle A2 · Barefoot Betrayal</div>
+      <div class="pc-why">Kuru has no equivalent — highest-upside uncontested angle. The barefoot injury community is large, active, and has zero brand addressing them. Pair with barefoot-injury creative that's confirmed working organically.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #4</div>
+      <div class="pc-title">Listicle L2 · Comparison Article</div>
+      <div class="pc-why">Research-mode buyers comparing brands need a destination before they land on Kuru's site. Comparison listicles also have strong organic share potential — reviewers reference them.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #5</div>
+      <div class="pc-title">PDP Angle A3 · Travel</div>
+      <div class="pc-why">High-income, underserved audience. The travel copy already exists — [vrsn]'s verified Japan, Machu Picchu, Frankfurt reviews are complete creative briefs. Easiest PDP to write.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #6</div>
+      <div class="pc-title">Advertorial A2 · Orthotics Exit</div>
+      <div class="pc-why">Structurally unclaimable by Kuru, Vionic, Orthofeet — all dependency products. Highest-conviction white space. Build after the PF story advertorial so you have a baseline CVR to compare against.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #7</div>
+      <div class="pc-title">PDP Angle A1 · Machine Washable</div>
+      <div class="pc-why">Strongest exclusive USP — but works better as a closing argument than an opening hook. Buyers need to understand the pain-relief story before this lands. Build after story-first pages are live.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #8</div>
+      <div class="pc-title">Listicle L1 · "Signs Your Shoes…"</div>
+      <div class="pc-why">Problem-first listicle for broad cold traffic. Works as a top-of-funnel awareness layer — readers share it, captures search intent, flows naturally into the quiz.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #9</div>
+      <div class="pc-title">Advertorial A3 · Active Lifestyle</div>
+      <div class="pc-why">The identity-first angle — "I thought foot pain was my life now." Converts buyers who've been warmed by earlier touchpoints. Build last in the advertorial series.</div>
+    </div>
+    <div class="pc">
+      <div class="pc-order">Build #10</div>
+      <div class="pc-title">Listicle L3 · "7 Things Reddit Says…"</div>
+      <div class="pc-why">Highest trust, lowest sales pressure. Converts the skeptical researcher. Works as a retargeting destination for people who've seen the brand but haven't bought. Build last — needs brand awareness to be established first.</div>
+    </div>
+  </div>
+</section>
+
+<div style="padding:24px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;margin-top:24px">
+  <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)">Skyvane · [vrsn] LP Strategy Brief · March 2026</div>
+  <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--dim)">Confidential · For internal use only</div>
+</div>
+
+</main>
+</div>
+
+<script>
+// Fade-in on scroll
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.06, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// Active nav
+const secs = document.querySelectorAll('section[id], div[id]');
+const navAs = document.querySelectorAll('.nav-a');
+const secObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.getAttribute('id');
+      navAs.forEach(a => {
+        a.classList.remove('act');
+        if (a.getAttribute('href') === '#' + id) a.classList.add('act');
+      });
+    }
+  });
+}, { threshold: 0.25, rootMargin: '-80px 0px -60% 0px' });
+secs.forEach(s => secObs.observe(s));
+
+// Animate score bars
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.sc-fill[data-w]').forEach(bar => {
+        const w = bar.dataset.w;
+        bar.style.width = '0%';
+        requestAnimationFrame(() => setTimeout(() => { bar.style.width = w + '%'; }, 80));
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.comp-card').forEach(c => barObs.observe(c));
+</script>
+</body>
+</html>
